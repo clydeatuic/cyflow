@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Weather Demo</title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+
+<style type="text/css">
+	
+body {
+  background: #1c2e40;
+  color: #fff;
+}
+
+.centerMe {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+}
+
+.bubble {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  height: 80px;
+  width: 80px;
+  border-radius: 50%;
+  background: #2c3e50;
+  overflow: hidden;
+  -webkit-transform: translate(-50%, -50%) rotate(-10deg);
+          transform: translate(-50%, -50%) rotate(-10deg);
+  -webkit-animation: rock 4s infinite ease-in-out;
+          animation: rock 4s infinite ease-in-out;
+  border: 3px solid #2c3e50;
+  box-shadow: inset 0 0 30px rgba(255, 255, 255, 0.1);
+}
+.bubble:before {
+  content: '';
+  position: absolute;
+  background: #2980b9;
+  width: 80px;
+  height: 30px;
+  bottom: 0;
+  display: block;
+  border-top-right-radius: 50%;
+  border-top: 2px solid rgba(255, 255, 255, 0.5);
+  -webkit-animation: curve 4s infinite ease-in-out;
+          animation: curve 4s infinite ease-in-out;
+  -webkit-animation-delay: .5s;
+          animation-delay: .5s;
+  background-clip: border-box;
+  -webkit-transform: rotate(-10deg);
+          transform: rotate(-10deg);
+  box-shadow: inset 0 10px 20px rgba(255, 255, 255, 0.2), inset 0 -10px 20px rgba(0, 0, 0, 0.4);
+}
+.bubble:after {
+  content: '';
+  position: absolute;
+  background: rgba(255, 255, 255, 0.1);
+  width: 50px;
+  height: 24px;
+  top: -15px;
+  right: 0;
+  -webkit-transform: rotate(20deg);
+          transform: rotate(20deg);
+  -webkit-filter: blur(12px);
+          filter: blur(12px);
+  display: block;
+  border-top-left-radius: 50%;
+}
+
+.shadow {
+  position: absolute;
+  top: calc(50% + 45px);
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+  -webkit-filter: blur(2px);
+          filter: blur(2px);
+  height: 20px;
+  width: 80px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.2);
+  z-index: -1;
+  -webkit-animation: shadow-rock 4s infinite ease-in-out;
+          animation: shadow-rock 4s infinite ease-in-out;
+}
+
+@-webkit-keyframes rock {
+  50% {
+    -webkit-transform: translate(calc(-50% + 10px), -50%) rotate(10deg);
+            transform: translate(calc(-50% + 10px), -50%) rotate(10deg);
+  }
+}
+
+@keyframes rock {
+  50% {
+    -webkit-transform: translate(calc(-50% + 10px), -50%) rotate(10deg);
+            transform: translate(calc(-50% + 10px), -50%) rotate(10deg);
+  }
+}
+@-webkit-keyframes shadow-rock {
+  50% {
+    left: calc(50% + 10px);
+  }
+}
+@keyframes shadow-rock {
+  50% {
+    left: calc(50% + 10px);
+  }
+}
+@-webkit-keyframes curve {
+  25%, 75% {
+    border-top: 2px solid rgba(255, 255, 255, 0);
+  }
+  50% {
+    border-top-left-radius: 50%;
+    border-top-right-radius: 0;
+    border-top: 2px solid rgba(255, 255, 255, 0.5);
+    -webkit-transform: rotate(10deg);
+            transform: rotate(10deg);
+  }
+}
+@keyframes curve {
+  25%, 75% {
+    border-top: 2px solid rgba(255, 255, 255, 0);
+  }
+  50% {
+    border-top-left-radius: 50%;
+    border-top-right-radius: 0;
+    border-top: 2px solid rgba(255, 255, 255, 0.5);
+    -webkit-transform: rotate(10deg);
+            transform: rotate(10deg);
+  }
+}
+
+
+</style>
+
+</head>
+<body>
+
+<div id="app"></div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+<script type="text/javascript">
+	const SEARCH_URL = 'https://api.openweathermap.org/data/2.5/forecast';
+	axios.get(SEARCH_URL, {
+		params: {
+			q: 'Davao',
+			units: 'metric',
+			appid: '299dafbd93e95452304f176a39de2b2e'
+		}
+	})
+	.then(function (response) {
+		let list = response.data.list;
+		let html = `
+
+<div class='bubble'></div>
+<div class='shadow'></div>
+
+			<div class="container">
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<th>Date</th>
+						<th>Type</th>
+						<th>Description</th>
+						<th>Icon</th>
+					</tr>
+				</thead>
+				<tbody>
+		`;
+		list.map((d)=>{
+			//console.log(d.dt_txt);
+			if(d.dt_txt.split(" ")[1]=="12:00:00")
+			html += `
+				<tr>
+					<td>${d.dt_txt}</td>
+					<td>${d.weather[0].main}</td>
+					<td>${d.weather[0].description}</td>
+					<td>
+						<img src="http://openweathermap.org/img/w/${d.weather[0].icon}.png" />						
+					</td>
+				</tr>
+			`;
+		});
+		html += `</tbody></table></div>`;
+		$('#app').html(html);
+		// console.log(response);
+	})
+	.catch(function (error) {
+		console.log(error);
+	});
+</script>
+
+</body>
+</html>
